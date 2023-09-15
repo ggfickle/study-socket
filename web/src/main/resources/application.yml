@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ${project.artifactId}
+  profiles:
+    active: ${RUN_TIME:dev}
+  cache:
+    type: redis
+  redis:
+    lettuce:
+      pool:
+        max-idle: 10
+        max-wait: 30
+        min-idle: 0
+        max-active: 200
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  datasource:
+    druid:
+      keep-alive: true
+      async-init: true
+      min-evictable-idle-time-millis: 600000
+      # 连接闲置剔除时间
+      time-between-eviction-runs-millis: 300000
+      validation-query-timeout: 1
+      validation-query: SELECT 1
+      test-on-borrow: true
+      max-pool-prepared-statement-per-connection-size: 100
+      pool-prepared-statements: true
+      max-active: 100
+      initial-size: 30
+      min-idle: 30
+      max-wait: 60000
+      # 必须大于 time-between-eviction-runs-millis 时间
+      keep-alive-between-time-millis: 450000
+  jpa:
+    database: mysql
+
+logging:
+  file:
+    name: ./logs/${spring.application.name}.log
+

@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        use_sql_comments: true
+        format_sql: true
+  datasource:
+    druid:
+      url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/im?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&amp&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai}
+      username: ${MYSQL_USER_NAME:root}
+      password: ${MYSQL_PASSWORD:123456}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    port: ${REDIS_PORT:6379}
+    host: ${REDIS_HOST:192.168.1.108}
+    password: ${REDIS_PASSWORD:123456}
+    database: ${REDIS_DATABASE:0}
