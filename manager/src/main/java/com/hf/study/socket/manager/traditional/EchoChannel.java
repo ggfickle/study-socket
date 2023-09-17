@@ -8,10 +8,11 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Objects;
 
 // 使用 @ServerEndpoint 注解表示此类是一个 WebSocket 端点
 // 通过 value 注解，指定 websocket 的路径
-@ServerEndpoint(value = "/channel/echo")
+@ServerEndpoint(value = "/channel/echo", configurator = GetHttpRequestConfiguration.class)
 public class EchoChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EchoChannel.class);
@@ -28,25 +29,21 @@ public class EchoChannel {
             this.session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Bye"));;
             return;
         }
-
-
         this.session.getAsyncRemote().sendText("["+ Instant.now().toEpochMilli() +"] Hello " + message);
     }
 
     // 连接打开
     @OnOpen
-    public void onOpen(Session session, EndpointConfig endpointConfig){
+    public void onOpen(Session session, EndpointConfig endpointConfig) throws IOException {
         // 保存 session 到对象
         this.session = session;
+        String token = (String) endpointConfig.getUserProperties().get("token");
+        System.out.println("endpointConfig.getUserProperties().get(\"token\") = " + token);
+        if (!Objects.equals(token, "123")) {
+            LOGGER.warn("token校验失败，自动断开连接");
+            this.session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "invalid token"));
+        }
         LOGGER.info("[websocket] 新的连接：id={}", this.session.getId());
-
-        System.out.println(session.getProtocolVersion());
-        System.out.println(session.getUserPrincipal());
-        System.out.println(session.getAsyncRemote());
-        System.out.println("getNegotiatedSubprotocol:" + session.getNegotiatedSubprotocol());
-        System.out.println(session.getUserProperties());
-        System.out.println(session.getId());
-        System.out.println(session.getNegotiatedExtensions());
     }
 
     // 连接关闭

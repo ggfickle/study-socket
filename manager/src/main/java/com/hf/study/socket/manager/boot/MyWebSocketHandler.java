@@ -82,7 +82,7 @@ public class MyWebSocketHandler implements WebSocketHandler, ApplicationContextA
         }
         try {
             webSocketSession.sendMessage(new TextMessage(message));
-            log.error("消息发送成功：userId:{}, message:{}, ", toUserId, message);
+            log.info("消息发送成功：userId:{}, message:{}, ", toUserId, message);
         } catch (IOException e) {
             log.error("消息发送失败：userId:{}, message:{}, ", toUserId, message, e);
             throw new BizException("消息发送失败");

@@ -45,7 +45,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
         @Override
         public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                        WebSocketHandler wsHandler, Map<String, Object> attributes) {
-            log.info("HandshakeInterceptor beforeHandshake start...");
             if (request instanceof ServletServerHttpRequest) {
                 HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
                 String authorization = req.getHeader("Sec-WebSocket-Protocol");
@@ -67,21 +66,17 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 attributes.put("createTime", System.currentTimeMillis());
                 attributes.put("token", authorization);
                 attributes.put(HttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTR_NAME, req.getSession().getId());
-                log.info("【beforeHandshake】 WEBSOCKET_INFO_MAP: {}", attributes);
             }
-            log.info("HandshakeInterceptor beforeHandshake end...");
             return true;
         }
         @Override
         public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Exception exception) {
-            log.info("HandshakeInterceptor afterHandshake start...");
             HttpServletRequest httpRequest = ((ServletServerHttpRequest) request).getServletRequest();
             HttpServletResponse httpResponse = ((ServletServerHttpResponse) response).getServletResponse();
             if (StrUtil.isNotEmpty(httpRequest.getHeader("Sec-WebSocket-Protocol"))) {
                 httpResponse.addHeader("Sec-WebSocket-Protocol", httpRequest.getHeader("Sec-WebSocket-Protocol"));
             }
-            log.info("HandshakeInterceptor afterHandshake end...");
         }
     }
 }
