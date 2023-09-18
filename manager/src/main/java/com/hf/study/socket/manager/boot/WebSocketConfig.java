@@ -48,6 +48,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
             if (request instanceof ServletServerHttpRequest) {
                 HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
                 String authorization = req.getHeader("Sec-WebSocket-Protocol");
+                if (StrUtil.isBlank(authorization)) {
+                    authorization = req.getParameter("token");
+                }
                 log.info("authorization = {}", authorization);
                 String userId = null;
                 try {
